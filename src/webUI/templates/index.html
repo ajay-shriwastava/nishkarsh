@@ -1,0 +1,62 @@
+{% extends 'base.html' %}
+
+{% block title %} {{ static_content['title'] }} {% endblock %}
+
+{% block content %}
+    <div class="jumbotron jumbotron-fluid text-center">
+        <h2>{{ static_content['application_name'] }}</h2>
+    </div>
+
+    <form class="form-horizontal" method="POST" action="{{url_for('index')}}" role="form">
+    <div class="dropdown">
+        <button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown">Select User
+        <span class="caret"></span></button>
+            <div class="dropdown-menu pre-scrollable" aria-labelledby="dropdownMenu3">
+                {% for user in users %}
+                    <button name = "session_user_id" value = "{{ user['user_id'] }}" class="dropdown-item text-right " type="submit">{{ user['user_id'] }}</button>
+                {% endfor %}
+            </div>
+    </div>
+    </form>
+    <hr>
+    <h4>Selected User ID : {{ session_user['user_id'] }}</h4>
+    {% if preferences['locations'] %}
+    <h6>Locations: {{ preferences['locations'] }} </h6>
+    {% endif %}
+    {% if preferences['languages'] %}
+    <h6>Languages: {{ preferences['languages'] }} </h6>
+    {% endif %}
+    {% if preferences['genres'] %}
+    <h6>Genres: {{ preferences['genres'] }} </h6>
+    {% endif %}
+    {% if preferences['tracks'] %}
+    <h6>Favorite Tracks: {{ preferences['tracks'] }} </h6>
+    {% endif %}
+    <a href="{{ url_for('editUser', user_id=session_user['user_id']) }}">
+        <span class="badge badge-warning">Preferences</span>
+    </a>
+    <hr>
+    <h4>Most Trending Tracks </h4>
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Track Id</th>
+                <th>Track Title</th>
+                <th>Artist Name</th>
+                <th>Artist Id</th>
+                <th>Tweet Count</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for track in top_tracks %}
+            <tr>
+                <td>{{ track['track_Id'] }}</td>
+                <td>{{ track['track_title'] }}</td>
+                <td>{{track['artist_name'] }}</td>
+                <td>{{ track['artist_id'] }}</td>
+                <td>{{ track['tweet_count'] }}</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}
