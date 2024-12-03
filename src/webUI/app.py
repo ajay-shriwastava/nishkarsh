@@ -9,7 +9,7 @@ app = Flask(__name__)
 app.config['SECRET_KEY'] = 'Basic_Flask_Application'
 cache.init_app(app, config={'CACHE_TYPE': 'simple', 'CACHE_DEFAULT_TIMEOUT': 3600})
 
-DEFAULT_SESSION_USER_ID = "123"
+DEFAULT_SESSION_USER_ID = "17291429"
 session_user_id = DEFAULT_SESSION_USER_ID
 
 
