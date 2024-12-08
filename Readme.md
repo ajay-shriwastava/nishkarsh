@@ -12,8 +12,6 @@ and [DB Browser for SQLite](https://sqlitebrowser.org/) is used as SQL Client.
 $ Go to project web API root (e.g. cd ~/workspace/projects/nishkarsh/src/webUI)    
 $ Activate virtual environment. (e.g. workon nishkarsh)     
 $ pip install -r requirements.txt
-$ export FLASK_APP=app     
-$ export FLASK_ENV=development     
 
 ##### Set up database. 
 Open a new tab and go to project root.     
@@ -23,7 +21,9 @@ $ python init_db.py
 
 ##### Run the application
 Open a new tab and go to project root.    
-$ cd ~/workspace/projects/nishkarsh/src/webUI    
+$ cd ~/workspace/projects/nishkarsh/src/webUI 
+$ export FLASK_APP=app     
+$ export FLASK_ENV=development    
 $ flask run     
 Open the URL at http://127.0.0.1:5000/    
 To hot deploy     
@@ -37,3 +37,4 @@ $ flask run -p 5001
 3.[Sqlite Database](https://www.sqlite.org/)    
 4.[Bootstrap w3School Docs](https://www.w3schools.com/bootstrap4/default.asp)    
 5.[Bootstrap Example](https://getbootstrap.com/2.0.4/examples/hero.html)
+6.[Setting up Blueprints](https://www.digitalocean.com/community/tutorials/how-to-structure-large-flask-applications#1-flask-the-minimalist-application-development-framework)

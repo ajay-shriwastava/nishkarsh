@@ -1,9 +1,13 @@
 from flask import Flask, render_template, request, url_for, flash, redirect
-import json
 from werkzeug.exceptions import abort
 import db_cmds as db
 import lookup
 from lookup import cache
+import m4_ast01_file
+
+import plotly
+import plotly.express as px
+import json
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'Basic_Flask_Application'
@@ -83,6 +87,20 @@ def deleteUser(user_id):
     flash('"{}" was successfully deleted!'.format(user_id))
     return redirect(url_for('index'))
 
+
+@app.route('/m4/m4_ast01_seq', methods=('GET', 'POST'))
+def m4_ast01_seq():
+    m4_ast_01_seq = m4_ast01_file.m4_ast_01_seq()
+    display_data = m4_ast_01_seq.get_display_data()
+    nparr_list = display_data[0]
+    fig_list = []
+    for np_arr in nparr_list:
+        fig = px.imshow(np_arr, binary_string=True, width=280, height=280)
+        fig_json = json.dumps(fig, cls=plotly.utils.PlotlyJSONEncoder)
+        fig_list.append(fig_json)
+    disp_list = zip (fig_list, display_data[1], display_data[2], display_data[3])
+    return render_template('m4_ast01_seq.html', static_content=lookup.static_content,
+                           disp_list=disp_list)
 
 @app.route('/about')
 def about():

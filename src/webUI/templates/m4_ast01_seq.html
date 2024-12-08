@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+
+{% block title %}  {{ static_content['title'] }}  {% endblock %}
+
+{% block content %}
+    <div class="jumbotron jumbotron-fluid text-center">
+        <h2>{{ static_content['application_name'] }}</h2>
+    </div>
+    <h4>Image Classification :</h4>
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Image</th>
+                <th>Class Probabilities</th>
+                <th>Prediction</th>
+                <th>Label</th>
+            </tr>
+        </thead>
+        <tbody>
+
+        {% for row in disp_list %}
+            <tr>
+                <td>
+                <div id="chart{{loop.index}}" class="chart"></div>
+                <script type='text/javascript'>
+                    var graphs = {{row[0] | safe}};
+                    Plotly.newPlot("chart{{loop.index}}", graphs, {});
+                </script>
+                </td>
+                <td>{{ row[1] }}</td>
+                <td>{{ row[2] }}</td>
+                <td>{{ row[3] }}</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+    <hr>
+
+    <hr>
+{% endblock %}
