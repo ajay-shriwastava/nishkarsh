@@ -10,7 +10,7 @@ and [DB Browser for SQLite](https://sqlitebrowser.org/) is used as SQL Client.
 
 ##### Set up environment    
 $ Go to project web API root (e.g. cd ~/workspace/projects/nishkarsh/src/webUI)    
-$ Activate virtual environment. (e.g. workon nishkarsh)     
+$ Activate virtual environment. (e.g. workon iisc)     
 $ pip install -r requirements.txt
 
 ##### Set up database. 

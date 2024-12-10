@@ -1,5 +1,7 @@
+import os
 from flask import Flask, render_template, request, url_for, flash, redirect
 from werkzeug.exceptions import abort
+from werkzeug.utils import secure_filename
 import db_cmds as db
 import lookup
 from lookup import cache
@@ -90,6 +92,8 @@ def deleteUser(user_id):
 
 @app.route('/m4/m4_ast01_seq', methods=('GET', 'POST'))
 def m4_ast01_seq():
+    UPLOAD_FOLDER = 'static/img/m4/user123/'
+    ALLOWED_EXTENSIONS = set(['txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif'])
     m4_ast_01_seq = m4_ast01_file.m4_ast_01_seq()
     display_data = m4_ast_01_seq.get_display_data()
     nparr_list = display_data[0]
@@ -99,8 +103,22 @@ def m4_ast01_seq():
         fig_json = json.dumps(fig, cls=plotly.utils.PlotlyJSONEncoder)
         fig_list.append(fig_json)
     disp_list = zip (fig_list, display_data[1], display_data[2], display_data[3])
-    return render_template('m4_ast01_seq.html', static_content=lookup.static_content,
-                           disp_list=disp_list)
+    if request.method == 'POST':
+        if 'file' not in request.files:
+            flash('No file part received in request, File selection is required for upload!')
+            return redirect(request.url)
+        f = request.files['file']
+        if (not f) or f.filename == '':
+            flash('File selection is required for upload!')
+            return redirect(request.url)
+        if ('.' not in f.filename) or (f.filename.rsplit('.', 1)[1].lower() not in ALLOWED_EXTENSIONS):
+            flash('File format is not supported. Please upload only greyscale mnist images in png format!')
+            return redirect(request.url)
+        else:
+            filename = secure_filename(f.filename)
+            f.save(os.path.join(UPLOAD_FOLDER, filename))
+            flash('"{}" was successfully saved!'.format(f.filename))
+    return render_template('m4_ast01_seq.html', static_content=lookup.static_content, disp_list=disp_list)
 
 @app.route('/about')
 def about():
