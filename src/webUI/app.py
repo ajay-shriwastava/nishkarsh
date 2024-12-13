@@ -1,4 +1,6 @@
 import os
+
+import numpy as np
 from flask import Flask, render_template, request, url_for, flash, redirect
 from werkzeug.exceptions import abort
 from werkzeug.utils import secure_filename
@@ -10,6 +12,7 @@ import m4_ast01_file
 import plotly
 import plotly.express as px
 import json
+from PIL import Image, ImageOps
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'Basic_Flask_Application'
@@ -100,9 +103,13 @@ def m4_ast01_seq():
     fig_list = []
     for np_arr in nparr_list:
         fig = px.imshow(np_arr, binary_string=True, width=280, height=280)
+        fig.update_layout(
+            margin={"t": 0, "b": 0, "r": 0, "l": 0, "pad": 0},
+        )
         fig_json = json.dumps(fig, cls=plotly.utils.PlotlyJSONEncoder)
         fig_list.append(fig_json)
     disp_list = zip (fig_list, display_data[1], display_data[2], display_data[3])
+    predictedVal = None
     if request.method == 'POST':
         if 'file' not in request.files:
             flash('No file part received in request, File selection is required for upload!')
@@ -118,7 +125,20 @@ def m4_ast01_seq():
             filename = secure_filename(f.filename)
             f.save(os.path.join(UPLOAD_FOLDER, filename))
             flash('"{}" was successfully saved!'.format(f.filename))
-    return render_template('m4_ast01_seq.html', static_content=lookup.static_content, disp_list=disp_list)
+            try :
+                img = Image.open(os.path.join(UPLOAD_FOLDER, filename))
+                image = np.array(img)
+                image = np.reshape(image, (1, 28, 28))
+                X_pred, y_raw, y_pred, y_labels = m4_ast_01_seq.get_display_predictions(X_pred=image)
+                print(y_raw[0], y_pred[0], y_labels[0])
+                pred_fig_json = json.dumps(img, cls=plotly.utils.PlotlyJSONEncoder)
+                predictedVal = ('img/m4/user123/' + filename, y_raw[0], y_pred[0], y_labels[0])
+                print("predictedVal:", X_pred[0], y_raw[0], y_pred[0], y_labels[0])
+            except Exception as e:
+                print("Error in making prediction", e)
+                flash('Error in making prediction', e)
+    return render_template('m4_ast01_seq.html', static_content=lookup.static_content, disp_list=disp_list,
+                           predictedVal=predictedVal)
 
 @app.route('/about')
 def about():

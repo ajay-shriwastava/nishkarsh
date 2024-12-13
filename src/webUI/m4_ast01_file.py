@@ -2,7 +2,7 @@ from tensorflow import keras
 import numpy as np
 import warnings
 import os
-
+from PIL import Image, ImageOps
 warnings.filterwarnings('ignore')
 
 
@@ -44,23 +44,20 @@ class m4_ast_01_seq:
         return (X_test, y_raw, y_pred, y_labels)
 
     def get_display_predictions(self, X_pred = None):
-        if not X_pred:
-            X_pred = self.get_default_data() / 255
-        y_pred = np.argmax(self.model.predict(X_pred), axis=-1)
-        return y_pred
+        if (X_pred is None) or (not X_pred.any()):
+            X_pred = self.get_default_data(1) / 255
+        else:
+            X_pred = X_pred / 255
+        y_raw = self.model.predict(X_pred)
+        y_pred = np.argmax(y_raw, axis=-1)
+        y_labels = np.array(self.get_class_names())[y_pred]
+        return (X_pred, y_raw, y_pred, y_labels)
 
     def get_class_probabilities(self, X_pred = None):
         if not X_pred:
             X_pred = self.get_default_data() / 255
-        y_proba = ast_01.model.predict(X_pred)
+        y_proba = self.model.predict(X_pred)
         y_proba.round(2)
         return y_proba
 
-ast_01 = m4_ast_01_seq()
-print("Class Probabilities: \n", ast_01.get_class_probabilities())
-y_pred = ast_01.get_display_predictions()
-print("Predicted labels: \n", y_pred)
-print(np.array(ast_01.get_class_names())[y_pred])
-for row in ast_01.get_display_data():
-    print("Row: ", row[1], row[2], row[3])
 

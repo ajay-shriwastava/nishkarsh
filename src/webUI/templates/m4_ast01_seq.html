@@ -35,6 +35,28 @@
         </tbody>
     </table>
     <hr>
+    <h4>Image Prediction :</h4>
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Image</th>
+                <th>Class Probabilities</th>
+                <th>Prediction</th>
+                <th>Label</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>
+                <img src="{{url_for('static', filename=predictedVal[0])}}" alt="Predicted Image">
+                </td>
+                <td>{{ predictedVal[1] }}</td>
+                <td>{{ predictedVal[2] }}</td>
+                <td>{{ predictedVal[3] }}</td>
+            </tr>
+        </tbody>
+    </table>
+    <hr>
     <form method = "post" enctype="multipart/form-data">
         <input type="file" name="file" />
         <input type = "submit" value="Upload">
